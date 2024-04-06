@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Table(name = "PAYROLL_CUSTOMER")
 @Entity
 @Data
@@ -24,11 +26,13 @@ public class Payroll {
     private Long BankCode;
     private Long AccountNo;
     private String GradeLevel;
-    private Long GrossEarnings;
-    private Long GrossDeductions;
-    private Long NetPay;
+    private BigDecimal GrossEarnings;
+    private BigDecimal GrossDeductions;
+    private BigDecimal NetPay;
     @ManyToOne
     private PayrollGroup payrollGroup;
+    private Long status;
+    private String message;
 
 
 

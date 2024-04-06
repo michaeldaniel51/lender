@@ -1,9 +1,11 @@
 package com.bravewood.safelenderbatchprocessing.payroll.service;
 
 import com.bravewood.safelenderbatchprocessing.payroll.domain.FileDb;
+import com.bravewood.safelenderbatchprocessing.payroll.domain.Payroll;
 import com.bravewood.safelenderbatchprocessing.payroll.domain.PayrollGroup;
 import com.bravewood.safelenderbatchprocessing.payroll.exception.PayrollException;
 import com.bravewood.safelenderbatchprocessing.payroll.repository.PayrollGroupRepo;
+import com.bravewood.safelenderbatchprocessing.payroll.repository.PayrollRepo;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,8 +32,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -42,6 +47,7 @@ public class PayrollServiceImpl implements PayrollService {
     private final Job job;
     private final FileDbService storageService;
     private final PayrollGroupRepo payrollGroupRepo;
+    private final PayrollRepo payrollRepo;
 
     @Value("${batch.temporary.storage.url}")
     private String TEMP_STORAGE;
@@ -112,7 +118,7 @@ public class PayrollServiceImpl implements PayrollService {
 }
 
     @Override
-    public BatchStatus uploadByBatch(MultipartFile multipartFile, Long productId, Long employerId, String name,String user_email,YearMonth uploaded_period) {
+    public BatchStatus uploadByBatch(MultipartFile multipartFile, Long productId, Long employerId, String name,String user_email,YearMonth uploaded_period,String message) {
 
             try {
 
@@ -138,11 +144,11 @@ public class PayrollServiceImpl implements PayrollService {
                     payrollGroup.setProductId(productId);
                     payrollGroup.setUpload_period(uploaded_period.toString());
 
-                    //if (!user_email.isEmpty()){
+                    if (!user_email.isEmpty()){
                         payrollGroup.setUser_email(user_email);
-//                    }else {
-//                        throw new PayrollException("email cannot be empty");
-//                    }
+                    }else {
+                        throw new PayrollException("email cannot be empty");
+                    }
 
                    PayrollGroup payrollGroupId = payrollGroupRepo.save(payrollGroup);
 
@@ -155,6 +161,8 @@ public class PayrollServiceImpl implements PayrollService {
                     multipartFile.transferTo(fileToImport);
 
                     JobParameters jobParameters = new JobParametersBuilder()
+                            .addLong("status", Long.valueOf(payrollGroup.getStatus()))
+                            .addString("message", message)
                         .addLong("payrollGroupId", payrollGroupId.getId())
                         .addString("fullPathFileName", TEMP_STORAGE + originalFileName)
                         .addLong("startAt", System.currentTimeMillis()).toJobParameters();
@@ -179,6 +187,36 @@ public class PayrollServiceImpl implements PayrollService {
 
     }
 
+
+
+    public List<PayrollGroup> findByUploadedDateAndStatus(LocalDate uploaded_date,Integer status){
+
+        List<PayrollGroup> findPayrollGroup = payrollGroupRepo.findAll().stream().filter(payrollGroup -> payrollGroup.getUploaded_date().equals(uploaded_date) && payrollGroup.getStatus().equals(status)).collect(Collectors.toList());
+
+        if (findPayrollGroup.isEmpty()) {
+        throw new PayrollException("found no result");
+        }
+
+       return findPayrollGroup;
+
     }
+
+    @Override
+    public List<Payroll> findByPayrollGroupAndStatus(Long payrollGroupId,Long status) {
+
+
+        List<Payroll> payrollGroup = payrollRepo.findAll().stream().filter(payroll -> payroll.getPayrollGroup().getId().equals(payrollGroupId)).toList();
+
+        if (payrollGroup.isEmpty()) {
+            throw new PayrollException("found no result");
+        }
+
+        return payrollGroup;
+
+
+    }
+
+
+}
 
 

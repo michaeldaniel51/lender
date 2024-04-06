@@ -16,12 +16,18 @@ import java.time.LocalDate;
 
 
 
-@Table(name = "payroll_group")
+
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "payroll_group",uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"productId","employerId","upload_period"},
+                name = "payroll_group_unique_identifiers")})
+//@Table(name = "payroll_customer")
 public class PayrollGroup {
+
+
 
     @Id
     @GeneratedValue

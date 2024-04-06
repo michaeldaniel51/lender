@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
 
 
@@ -52,6 +53,21 @@ public class ExceptionAdvice {
         ExceptionResponse exceptionResponse = new ExceptionResponse();
 
         exceptionResponse.setErrorMessage(ex.getMessage());
+        exceptionResponse.setTime(LocalDateTime.now());
+
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+    }
+
+
+
+    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+    public ResponseEntity<ExceptionResponse> handleSqlIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException ex) {
+        log.error("sql", ex);
+
+        ExceptionResponse exceptionResponse = new ExceptionResponse();
+
+        exceptionResponse.setErrorMessage(ex.getMessage());
+        exceptionResponse.setMessage("duplicate entries are not allowed");
         exceptionResponse.setTime(LocalDateTime.now());
 
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);

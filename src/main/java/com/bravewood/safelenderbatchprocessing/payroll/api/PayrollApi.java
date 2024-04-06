@@ -1,6 +1,10 @@
 package com.bravewood.safelenderbatchprocessing.payroll.api;
 
 
+import com.bravewood.safelenderbatchprocessing.config.ApiConstants;
+import com.bravewood.safelenderbatchprocessing.payroll.domain.Payroll;
+import com.bravewood.safelenderbatchprocessing.payroll.domain.PayrollGroup;
+import com.bravewood.safelenderbatchprocessing.payroll.repository.PayrollGroupRepo;
 import com.bravewood.safelenderbatchprocessing.payroll.service.PayrollService;
 import com.bravewood.safelenderbatchprocessing.payroll.service.PayrollServiceImpl;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,12 +24,15 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.Date;
+import java.util.List;
+
+import static com.bravewood.safelenderbatchprocessing.config.ApiConstants.PREQUALIFICATION;
 
 
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/payroll")
+@RequestMapping(PREQUALIFICATION)
 public class PayrollApi {
 
 
@@ -33,6 +40,8 @@ public class PayrollApi {
     private final PayrollServiceImpl payrollServiceImpl;
 
     private final PayrollService payrollService;
+
+
 
 
     @PostMapping("/download_excel")
@@ -68,11 +77,24 @@ public class PayrollApi {
 
 
     @PostMapping("/upload")
-    public BatchStatus uploadBatch(@RequestParam("file") MultipartFile multipartFile, @RequestParam Long productId, @RequestParam Long employerId, @RequestParam String name,@RequestParam String user_email, @RequestParam YearMonth uploaded_period ) {
+    public BatchStatus uploadBatch(@RequestParam("file") MultipartFile multipartFile, @RequestParam Long productId, @RequestParam Long employerId, @RequestParam String name,@RequestParam String user_email, @RequestParam YearMonth uploaded_period,@RequestParam String message ) {
 
-        return payrollService.uploadByBatch(multipartFile,productId,employerId,name,user_email,uploaded_period);
+        return payrollService.uploadByBatch(multipartFile,productId,employerId,name,user_email,uploaded_period,message);
 
     }
 
+    @PostMapping("/payroll_group_list")
+    public List<PayrollGroup> findByUploadedDateAndStatus(@RequestParam LocalDate uploaded_date, @RequestParam Integer status) {
+
+        return payrollServiceImpl.findByUploadedDateAndStatus(uploaded_date,status);
+
+    }
+
+    @PostMapping("/payroll_customer_list/{payrollGroupId}")
+    public List<Payroll> findByPayrollGroupAndStatus(@PathVariable Long payrollGroupId,@RequestParam Long status) {
+
+        return payrollServiceImpl.findByPayrollGroupAndStatus(payrollGroupId,status);
+
+    }
 
 }
