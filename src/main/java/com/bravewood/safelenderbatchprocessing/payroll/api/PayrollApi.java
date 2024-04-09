@@ -26,13 +26,14 @@ import java.time.YearMonth;
 import java.util.Date;
 import java.util.List;
 
+import static com.bravewood.safelenderbatchprocessing.config.ApiConstants.PAYROLL;
 import static com.bravewood.safelenderbatchprocessing.config.ApiConstants.PREQUALIFICATION;
 
 
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(PREQUALIFICATION)
+@RequestMapping(PAYROLL)
 public class PayrollApi {
 
 

@@ -20,12 +20,6 @@ public class LoanDeciderService {
     @Autowired
     private LoanDeciderRepo loanDeciderRepo;
 
-//    @Autowired
-//    private BankScheduleAnalysisService bankScheduleAnalysisService;
-//
-//    @Autowired
-//    private CreditReportAnalysisService creditReportAnalysisService;
-
 
 
     public LoanDecider add (LoanDecider loanDecider){
@@ -36,13 +30,6 @@ public class LoanDeciderService {
         }else {
             throw new PayrollException("email is wrong and cannot be empty");
         }
-
-//        creditReportAnalysisService.add(loanDecider.getCreditReportAnalysis());
-//
-//        loanDecider.setCreditReportAnalysis(loanDecider.getCreditReportAnalysis());
-//
-//        bankScheduleAnalysisService.add(loanDecider.getBankScheduleAnalysis());
-//        loanDecider.setBankScheduleAnalysis(bankScheduleAnalysisService.add(loanDecider.getBankScheduleAnalysis()));
 
         return loanDeciderRepo.save(loanDecider);
     }
@@ -69,22 +56,7 @@ public class LoanDeciderService {
             if (Objects.nonNull(loanDecider.getProductId())) {
                 loanDecide.setProductId(loanDecider.getProductId());
             }
-//            if (Objects.nonNull(loanDecider.getBankScheduleAnalysis())) {
-//                BankScheduleAnalysis bankScheduleAnalysis = loanDecider.getBankScheduleAnalysis();
-//              //  bankScheduleAnalysis.setId(loanDecider.getBankScheduleAnalysis().getId());
-//                bankScheduleAnalysisService.update(bankScheduleAnalysis.getId(), bankScheduleAnalysis);
-//                loanDecide.setBankScheduleAnalysis(bankScheduleAnalysis);
-//
-//
-//            }
-//
-//            if (Objects.nonNull(loanDecider.getCreditReportAnalysis())) {
-//                CreditReportAnalysis creditReportAnalysis = loanDecider.getCreditReportAnalysis();
-//             //   creditReportAnalysis.setId(loanDecider.getCreditReportAnalysis().getId());
-//                creditReportAnalysisService.update(creditReportAnalysis.getId(), creditReportAnalysis);
-//                loanDecide.setCreditReportAnalysis(creditReportAnalysis);
-//
-//            }
+
         }else {
             throw new PayrollException("update was not successful");
         }

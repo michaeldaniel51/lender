@@ -62,10 +62,10 @@ public class BankScheduleAnalysisService {
             bankSchedule.setPreferredPaymentMode(bankScheduleAnalysis.getPreferredPaymentMode());
         }
         if (Objects.nonNull(bankScheduleAnalysis.getLoanDecider())) {
-            LoanDecider loanDecider = bankSchedule.getLoanDecider();
-            loanDecider.setId(bankSchedule.getLoanDecider().getId());
+            LoanDecider loanDecider = bankScheduleAnalysis.getLoanDecider();
+            loanDecider.setId(bankScheduleAnalysis.getLoanDecider().getId());
             loanDeciderService.update(loanDecider.getId(), loanDecider);
-            bankSchedule.setLoanDecider(loanDecider);
+            bankScheduleAnalysis.setLoanDecider(loanDecider);
 
         }else {
             throw new PayrollException("update was not successful");
