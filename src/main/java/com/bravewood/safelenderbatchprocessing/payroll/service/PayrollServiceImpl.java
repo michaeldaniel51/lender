@@ -32,6 +32,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -191,13 +192,13 @@ public class PayrollServiceImpl implements PayrollService {
 
     public List<PayrollGroup> findByUploadedDateAndStatus(LocalDate uploaded_date,Integer status){
 
-        List<PayrollGroup> findPayrollGroup = payrollGroupRepo.findAll().stream().filter(payrollGroup -> payrollGroup.getUploaded_date().equals(uploaded_date) && payrollGroup.getStatus().equals(status)).collect(Collectors.toList());
 
-        if (findPayrollGroup.isEmpty()) {
-        throw new PayrollException("found no result");
-        }
+            List<PayrollGroup> findPayrollGroup = payrollGroupRepo.findAll().stream().filter(payrollGroup -> payrollGroup.getUploaded_date().equals(uploaded_date) && payrollGroup.getStatus().equals(status)).collect(Collectors.toList());
+            if (findPayrollGroup.isEmpty()) {
+                throw new PayrollException("found no result");
+            }
 
-       return findPayrollGroup;
+            return findPayrollGroup;
 
     }
 

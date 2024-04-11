@@ -39,7 +39,7 @@ public class ExceptionAdvice {
         ExceptionResponse exceptionResponse = new ExceptionResponse();
 
         exceptionResponse.setErrorMessage(ex.getMessage());
-        exceptionResponse.setMessage("enter only year and month");
+        exceptionResponse.setMessage("enter correct date");
         exceptionResponse.setTime(LocalDateTime.now());
 
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
