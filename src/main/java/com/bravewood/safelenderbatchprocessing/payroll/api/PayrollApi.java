@@ -77,7 +77,7 @@ public class PayrollApi {
 
 
 
-    @PostMapping("/upload")
+    @PostMapping(value = "/upload",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public BatchStatus uploadBatch(@RequestParam("file") MultipartFile multipartFile, @RequestParam Long productId, @RequestParam Long employerId, @RequestParam String name,@RequestParam String user_email, @RequestParam YearMonth uploaded_period,@RequestParam String message ) {
 
         return payrollService.uploadByBatch(multipartFile,productId,employerId,name,user_email,uploaded_period,message);
