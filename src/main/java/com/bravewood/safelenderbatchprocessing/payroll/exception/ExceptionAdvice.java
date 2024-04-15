@@ -4,6 +4,7 @@ package com.bravewood.safelenderbatchprocessing.payroll.exception;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -68,6 +69,19 @@ public class ExceptionAdvice {
 
         exceptionResponse.setErrorMessage(ex.getMessage());
         exceptionResponse.setMessage("duplicate entries are not allowed");
+        exceptionResponse.setTime(LocalDateTime.now());
+
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+    }
+
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ExceptionResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        log.error("sql", ex);
+
+        ExceptionResponse exceptionResponse = new ExceptionResponse();
+        exceptionResponse.setErrorMessage(ex.getMessage());
+        exceptionResponse.setMessage("email is invalid");
         exceptionResponse.setTime(LocalDateTime.now());
 
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);

@@ -18,6 +18,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,7 +28,6 @@ import java.util.Date;
 import java.util.List;
 
 import static com.bravewood.safelenderbatchprocessing.config.ApiConstants.PAYROLL;
-import static com.bravewood.safelenderbatchprocessing.config.ApiConstants.PREQUALIFICATION;
 
 
 @Slf4j
@@ -59,6 +59,7 @@ public class PayrollApi {
 
 
     @PostMapping("/download")
+   // @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public void downloadCsv(HttpServletResponse response) {
         response.setContentType("text/csv");
         String headerKey = "Content-Disposition";
@@ -78,6 +79,7 @@ public class PayrollApi {
 
 
     @PostMapping(value = "/upload",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+   // @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public BatchStatus uploadBatch(@RequestParam("file") MultipartFile multipartFile, @RequestParam Long productId, @RequestParam Long employerId, @RequestParam String name,@RequestParam String user_email, @RequestParam YearMonth uploaded_period,@RequestParam String message ) {
 
         return payrollService.uploadByBatch(multipartFile,productId,employerId,name,user_email,uploaded_period,message);
@@ -85,13 +87,14 @@ public class PayrollApi {
     }
 
     @PostMapping("/payroll_group_list")
+  //  @PreAuthorize("hasRole('USER')")
     public List<PayrollGroup> findByUploadedDateAndStatus(@RequestParam LocalDate uploaded_date, @RequestParam Integer status) {
 
         return payrollServiceImpl.findByUploadedDateAndStatus(uploaded_date,status);
 
     }
-
     @PostMapping("/payroll_customer_list/{payrollGroupId}")
+  //  @PreAuthorize("hasRole('ADMIN')")
     public List<Payroll> findByPayrollGroupAndStatus(@PathVariable Long payrollGroupId,@RequestParam Long status) {
 
         return payrollServiceImpl.findByPayrollGroupAndStatus(payrollGroupId,status);
