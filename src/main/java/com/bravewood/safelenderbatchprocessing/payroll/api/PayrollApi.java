@@ -58,7 +58,7 @@ public class PayrollApi {
     }
 
 
-    @PostMapping("/download")
+    @GetMapping("/download")
    // @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public void downloadCsv(HttpServletResponse response) {
         response.setContentType("text/csv");
@@ -86,14 +86,14 @@ public class PayrollApi {
 
     }
 
-    @PostMapping("/payroll_group_list")
+    @GetMapping("/payroll_group_list")
   //  @PreAuthorize("hasRole('USER')")
     public List<PayrollGroup> findByUploadedDateAndStatus(@RequestParam LocalDate uploaded_date, @RequestParam Integer status) {
 
         return payrollServiceImpl.findByUploadedDateAndStatus(uploaded_date,status);
 
     }
-    @PostMapping("/payroll_customer_list/{payrollGroupId}")
+    @GetMapping("/payroll_customer_list/{payrollGroupId}")
   //  @PreAuthorize("hasRole('ADMIN')")
     public List<Payroll> findByPayrollGroupAndStatus(@PathVariable Long payrollGroupId,@RequestParam Long status) {
 
